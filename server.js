@@ -9,9 +9,15 @@ connectDB();
 
 app.use(express.json());
 
+// users route
 const userRoutes = require('./routes/userRoutes');
-
 app.use('/api/users',userRoutes);
+
+
+// post route
+const postRoutes = require('./routes/postRoutes');
+app.use('/api/posts',postRoutes);
+
 
 app.get('/', (req, res) => {
   res.send('API running');
