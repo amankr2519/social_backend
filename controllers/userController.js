@@ -48,7 +48,7 @@ const loginUser = async(req,res)=>{
       {expiresIn: '7d'}
     );
 
-    res.status(201).json({
+    res.status(200).json({
       message:"Login successful",
       token,
     });
@@ -58,5 +58,8 @@ const loginUser = async(req,res)=>{
   }
 }
 
+const getUserProfile = async(req,res,next)=>{
+  res.json(req.user)
+}
 
-module.exports = {registerUser , loginUser};
+module.exports = {registerUser , loginUser ,getUserProfile};
