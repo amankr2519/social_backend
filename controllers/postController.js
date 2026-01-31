@@ -96,5 +96,24 @@ const unlikePost = async (req, res) => {
   }
 };
 
+const commentPost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
 
-module.exports = {createPost,getAllPosts,getMyPosts,deletePost,likePost,unlikePost} ;
+    const comment = {
+      user: req.user._id,
+      text: req.body.text,
+    };
+
+    post.comments.push(comment);
+    await post.save();
+
+    res.json({ message: 'Comment added' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+module.exports = {createPost,getAllPosts,getMyPosts,deletePost,likePost,unlikePost,commentPost} ;
