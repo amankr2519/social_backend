@@ -114,6 +114,34 @@ const commentPost = async (req, res) => {
   }
 };
 
+const deleteComment = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    const comment = post.comments.find(
+      (c) => c._id.toString() === req.params.commentId
+    );
+
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    if (comment.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+
+    post.comments = post.comments.filter(
+      (c) => c._id.toString() !== req.params.commentId
+    );
+
+    await post.save();
+
+    res.json({ message: 'Comment deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 
-module.exports = {createPost,getAllPosts,getMyPosts,deletePost,likePost,unlikePost,commentPost} ;
+
+module.exports = {createPost , getAllPosts , getMyPosts , deletePost ,likePost , unlikePost , commentPost , deleteComment} ;
