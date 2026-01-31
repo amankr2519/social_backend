@@ -3,7 +3,9 @@ const router = express.Router();
 const {createPost , getAllPosts , getMyPosts , deletePost ,likePost , unlikePost , commentPost , deleteComment} = require('../controllers/postController');
 const protect = require('../middleware/authMiddleware');
 
-router.post('/',protect,createPost);
+const upload = require('../middleware/uploadMiddleware');
+
+router.post('/', protect, upload.single('image'), createPost);
 router.get('/',getAllPosts);
 router.get('/me',protect,getMyPosts);
 

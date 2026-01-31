@@ -29,7 +29,11 @@ const postSchema = new mongoose.Schema({
         default : Date.now,
       }
     }
-  ]
+  ],
+  image : {
+    type : String,
+  }
+
 },{timestamps : true})
 
 module.exports = mongoose.model('Post',postSchema)

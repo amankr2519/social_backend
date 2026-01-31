@@ -1,17 +1,41 @@
 const Post = require('../models/Post');
+const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
 
-const createPost = async(req, res)=>{
-  try{
+const createPost = async (req, res) => {
+  try {
+    let imageUrl = '';
+
+    if (req.file) {
+      const streamUpload = (req) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: 'social_posts' },
+            (error, result) => {
+              if (result) resolve(result);
+              else reject(error);
+            }
+          );
+          streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+      };
+
+      const result = await streamUpload(req);
+      imageUrl = result.secure_url;
+    }
+
     const post = await Post.create({
-      user : req.user._id,
-      text : req.body.text,
+      user: req.user._id,
+      text: req.body.text,
+      image: imageUrl,
     });
-    
+
     res.status(201).json(post);
-  }catch(error){
-    res.status(500).json({message : error.message});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-}
+};
+
 
 const getAllPosts = async (req, res) => {
   try {
