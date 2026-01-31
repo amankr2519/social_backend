@@ -37,5 +37,26 @@ const getMyPosts = async (req, res) => {
   }
 };
 
+const deletePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
 
-module.exports = {createPost,getAllPosts,getMyPosts};
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Check ownership
+    if (post.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+
+    await post.deleteOne();
+
+    res.json({ message: 'Post deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+module.exports = {createPost,getAllPosts,getMyPosts,deletePost} ;
